@@ -1,5 +1,4 @@
 import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
 import { TokenResponse, WebsocketMessage, WebsocketMessageType } from "../dtos";
 
 @Injectable()
@@ -8,7 +7,7 @@ export class WebsocketService {
   private webSocket!: WebSocket;
 
   public init() {
-    this.webSocket = new WebSocket(`${environment.webSocketUrl}`);
+    this.webSocket = new WebSocket('wss://localhost:7083');
     this.webSocket.addEventListener("error", err => {
       this.receiveMessage({ messageType: WebsocketMessageType[WebsocketMessageType.ERROR], message: err } as WebsocketMessage);      
     });
@@ -41,7 +40,7 @@ export class WebsocketService {
       message: websocketMessageBody
     } as WebsocketMessage;
 
-    //--- Add token to message ---
+    //--- Pass token to message ---
     if(websocketMessageType !== WebsocketMessageType.AUTHENTICATE) {
       websocketMessage.encodedJwtToken = this.getEncodedJwtToken().userToken;
     }
@@ -86,13 +85,17 @@ export class WebsocketService {
    */
   private authenticateConnection(): void {
     this.debugLog("Requesting authentication");
+
+    //--- SessionId is only used by our "test API" to validate a valid session. Plase ignore the next line ---
     localStorage.setItem('SessionId', 'e08187e3-8f8c-4dc0-a0a3-fb4df916023a');
+
     this.sendMessage(WebsocketMessageType.AUTHENTICATE, {SessionId: this.getSessionId()});
   }
 
 
   /**
-   * getEncodedJwtToken
+   * In this case, we assume that the token is available in the localstore. 
+   * Please make changes here to customize your api
    */
   private getEncodedJwtToken(): TokenResponse {
     var token = {} as TokenResponse;
@@ -117,9 +120,7 @@ export class WebsocketService {
    * @param message 
    */
   private debugLog(message: string): void {
-    if(!environment.production) {
-      console.log(message);
-    }
+    console.log(message);
   }
 
 }
