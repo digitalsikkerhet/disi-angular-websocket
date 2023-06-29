@@ -1,0 +1,11 @@
+<div class="demo-container">
+  <h1>Angular Websocket Demo</h1>
+  <div>This is a simple demonstration of how to implement websocket in Angular.</div>
+  <div class="note">NOTE: You also need a WebSocket server to test the message flow. This is not included in this demo.</div>
+  <br/>
+  <input type="text" [(ngModel)]="messageToSend">
+  <button (click)="sendMessage()">Send message</button>
+  <div class="message-log">
+    <div *ngFor="let message of receivedMessages">{{message}}</div>
+  </div>
+</div>
