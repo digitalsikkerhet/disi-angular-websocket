@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  webSocketUrl: 'wss://localhost:7083',  
-  secureRoutes:  [ 'wss://localhost:7083' ],
+  webSocketUrl: 'wss://localhost:44323',  
+  secureRoutes:  [ 'wss://localhost:44323' ],
 };

@@ -1,5 +1,6 @@
 import { Injectable } from "@angular/core";
 import { TokenResponse, WebsocketMessage, WebsocketMessageType } from "../dtos";
+import { environment } from "src/environments/environment";
 
 @Injectable()
 export class WebsocketService {
@@ -7,7 +8,7 @@ export class WebsocketService {
   private webSocket!: WebSocket;
 
   public init() {
-    this.webSocket = new WebSocket('wss://localhost:7083');
+    this.webSocket = new WebSocket(`${environment.webSocketUrl}`);
     this.webSocket.addEventListener("error", err => {
       this.receiveMessage({ messageType: WebsocketMessageType[WebsocketMessageType.ERROR], message: err } as WebsocketMessage);      
     });
