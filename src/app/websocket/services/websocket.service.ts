@@ -1,8 +1,8 @@
 import { Injectable, OnDestroy } from "@angular/core";
-import { TokenResponse, WebsocketMessage, WebsocketMessageType } from "../dtos";
 import { environment } from "src/environments/environment";
 import { Subscription } from "rxjs";
-import { AuthService } from "./auth.service";
+import { AuthService } from "../../auth/auth.service";
+import { WebsocketMessage, WebsocketMessageType } from "../dtos";
 
 @Injectable()
 export class WebsocketService implements OnDestroy {

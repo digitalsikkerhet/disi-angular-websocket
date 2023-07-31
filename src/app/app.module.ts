@@ -6,7 +6,7 @@ import { WebsocketService } from './websocket/services/websocket.service';
 import { AppLoadService, loadApp } from './websocket/services/appLoad.service';
 import { AuthModule, LogLevel } from 'angular-auth-oidc-client';
 import { environment } from 'src/environments/environment';
-import { AuthService } from './websocket/services/auth.service';
+import { AuthService } from './auth/auth.service';
  
 
 @NgModule({

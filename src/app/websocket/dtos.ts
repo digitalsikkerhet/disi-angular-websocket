@@ -14,19 +14,3 @@ export interface WebsocketMessage {
     accessToken?: string;
     idToken?: string;    
 }
-
-export enum OidcProvider {
-    local = 0,
-    facebook = 1,
-    google = 2,
-    apple = 3,
-    microsoft = 4
-  }
-
-export interface TokenResponse
-{
-    provider: OidcProvider;
-    userToken: string;
-    isSuccess: boolean;
-    statusCode: number; 
-}

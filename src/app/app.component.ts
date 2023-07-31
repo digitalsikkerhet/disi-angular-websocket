@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { WebsocketService } from './websocket/services/websocket.service';
 import { WebsocketMessage, WebsocketMessageType } from './websocket/dtos';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
-import { AuthService } from './websocket/services/auth.service';
+import { AuthService } from './auth/auth.service';
 
 
 @Component({
