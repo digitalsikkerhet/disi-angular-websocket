@@ -1,6 +1,8 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { WebsocketService } from './websocket/services/websocket.service';
 import { WebsocketMessage, WebsocketMessageType } from './websocket/dtos';
+import { OidcSecurityService } from 'angular-auth-oidc-client';
+import { AuthService } from './websocket/services/auth.service';
 
 
 @Component({
@@ -10,14 +12,22 @@ import { WebsocketMessage, WebsocketMessageType } from './websocket/dtos';
 })
 export class AppComponent {
   title = 'disi-angular-websocket';  
+
+
+  //--- Websocket properies ---
   public messageToSend: string = 'Message to send...'
   public receivedMessages: string[] = []; 
 
-  constructor(private websocketService: WebsocketService) {
+  /**
+   * Constructor
+   */
+  constructor(public authService: AuthService, private websocketService: WebsocketService) {
     websocketService.messageCallback = this.receiveMessage.bind(this);
   }
-
-
+  
+  /**
+   * sendMessage
+   */
   public sendMessage(): void {
     this.websocketService.sendMessage(WebsocketMessageType.MESSAGE, { Action: 'Whateveryouwant', Id: 123, Value:"abc"});
   }
