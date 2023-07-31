@@ -11,7 +11,8 @@ export enum WebsocketMessageType {
 export interface WebsocketMessage {
     messageType: string;
     message: any;
-    encodedJwtToken?: string;
+    accessToken?: string;
+    idToken?: string;    
 }
 
 export enum OidcProvider {

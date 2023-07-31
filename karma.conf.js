@@ -25,7 +25,7 @@ module.exports = function (config) {
       suppressAll: true // removes the duplicated traces
     },
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/disi-angular-standalone'),
+      dir: require('path').join(__dirname, './coverage/disi-angular-websocket'),
       subdir: '.',
       reporters: [
         { type: 'html' },

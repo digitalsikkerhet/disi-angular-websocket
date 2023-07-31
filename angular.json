@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "disi-angular-standalone": {
+    "disi-angular-websocket": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,10 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/disi-angular-standalone",
+            "allowedCommonJsDependencies": [
+              "oidc-client"               
+           ],            
+            "outputPath": "dist/disi-angular-websocket",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -72,10 +75,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "disi-angular-standalone:build:production"
+              "browserTarget": "disi-angular-websocket:build:production"
             },
             "development": {
-              "browserTarget": "disi-angular-standalone:build:development"
+              "browserTarget": "disi-angular-websocket:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -83,7 +86,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "disi-angular-standalone:build"
+            "browserTarget": "disi-angular-websocket:build"
           }
         },
         "test": {

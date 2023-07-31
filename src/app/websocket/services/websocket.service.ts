@@ -1,13 +1,44 @@
-import { Injectable } from "@angular/core";
+import { Injectable, OnDestroy } from "@angular/core";
 import { TokenResponse, WebsocketMessage, WebsocketMessageType } from "../dtos";
 import { environment } from "src/environments/environment";
+import { Subscription } from "rxjs";
+import { AuthService } from "./auth.service";
 
 @Injectable()
-export class WebsocketService {
+export class WebsocketService implements OnDestroy {
   public messageCallback!: any;
   private webSocket!: WebSocket;
+  private checkAuthSubscription!: Subscription;
 
+  constructor(private authService: AuthService) {}
+
+  /**
+   * init
+   */
   public init() {
+    this.checkAuthSubscription = this.authService.isAuthenticated.subscribe(isAuthenticated => {
+      if(isAuthenticated) {
+        this.initWebSocket();
+      } else {
+        this.closeWebSocket('Logged out');
+      }
+    });
+  }
+
+  /**
+   * ngOnDestroy
+   */
+  ngOnDestroy(): void {
+    if(this.checkAuthSubscription) {
+      this.checkAuthSubscription.unsubscribe();
+    }
+    this.closeWebSocket('Destroyed');
+  }
+
+  /**
+   * initWebSocket
+   */
+  private initWebSocket(): void {
     this.webSocket = new WebSocket(`${environment.webSocketUrl}`);
     this.webSocket.addEventListener("error", err => {
       this.receiveMessage({ messageType: WebsocketMessageType[WebsocketMessageType.ERROR], message: err } as WebsocketMessage);      
@@ -28,9 +59,16 @@ export class WebsocketService {
     this.webSocket.addEventListener("close", evt => {
       this.receiveMessage({ messageType: WebsocketMessageType[WebsocketMessageType.CLOSED], message: evt.reason } as WebsocketMessage);
     });
-    
   }
 
+  /**
+   * closeWebSocket
+   */
+  private closeWebSocket(reason: string): void {
+    if(this.webSocket) {
+      this.webSocket.close(0, reason);
+    }
+  }
 
   /**
    * sendMessage
@@ -43,7 +81,8 @@ export class WebsocketService {
 
     //--- Pass token to message ---
     if(websocketMessageType !== WebsocketMessageType.AUTHENTICATE) {
-      websocketMessage.encodedJwtToken = this.getEncodedJwtToken().userToken;
+      websocketMessage.accessToken = this.authService.accessToken;
+      websocketMessage.idToken = this.authService.idToken;
     }
 
     this.webSocket.send(JSON.stringify(websocketMessage));
@@ -86,36 +125,10 @@ export class WebsocketService {
    */
   private authenticateConnection(): void {
     this.debugLog("Requesting authentication");
-
-    //--- SessionId is only used by our "test API" to validate a valid session. Plase ignore the next line ---
-    localStorage.setItem('SessionId', 'e08187e3-8f8c-4dc0-a0a3-fb4df916023a');
-
-    this.sendMessage(WebsocketMessageType.AUTHENTICATE, {SessionId: this.getSessionId()});
+    this.sendMessage(WebsocketMessageType.AUTHENTICATE, {AccessToken: this.authService.accessToken, idToken: this.authService.idToken});
   }
 
-
-  /**
-   * In this case, we assume that the token is available in the localstore. 
-   * Please make changes here to customize your api
-   */
-  private getEncodedJwtToken(): TokenResponse {
-    var token = {} as TokenResponse;
-    try {
-        const currentToken = localStorage.getItem('EncodedJwtToken');
-        token = currentToken ? JSON.parse(currentToken): {} as TokenResponse;
-    } catch (ex) {
-        console.error(ex);
-    }
-    return token;
-  }  
-
-  /**
-   * getSessionId
-   */
-  private getSessionId(): string | undefined {
-    return localStorage.getItem('SessionId') ?? undefined;
-  } 
-  
+ 
   /**
    * Log if debugging
    * @param message 
